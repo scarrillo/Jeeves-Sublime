@@ -3,10 +3,20 @@
 	"folders": [],
 	"build": {
 		"js": {
-			"enabled": false
+			"enabled": false,
+			"type": "exec",
+			"exec": {
+				"cmd": [
+					"ant", "-f", "build.xml"
+				]
+			}
 		},
 		"css": {
 			"enabled": false
+			"type": "build",
+			"build": {
+				"variant": "Recompile"
+			}
 		}
 	}
 }
