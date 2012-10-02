@@ -13,7 +13,7 @@ class Jeeves(sublime_plugin.EventListener):
 
 	def loadSettings(self):
 		#print "Jeeves: load settings"
-		self.settings = sublime.load_settings("jeeves.sublime-settings")
+		self.settings = sublime.load_settings("Jeeves.sublime-settings")
 		self.enabled = self.settings.get("enabled")
 
 		# Neat, but called whenever the file is saved, not just the key specified
