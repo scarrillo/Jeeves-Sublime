@@ -1,0 +1,12 @@
+{
+	"enabled": true,
+	"folders": [],
+	"build": {
+		"js": {
+			"enabled": false
+		},
+		"css": {
+			"enabled": false
+		}
+	}
+}
