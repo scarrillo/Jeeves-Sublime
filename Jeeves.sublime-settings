@@ -12,7 +12,7 @@
 			}
 		},
 		"css": {
-			"enabled": false
+			"enabled": false,
 			"type": "build",
 			"build": {
 				"variant": "Recompile"
