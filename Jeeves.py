@@ -7,6 +7,8 @@
 import sublime, sublime_plugin,os
 
 class Jeeves(sublime_plugin.EventListener):
+	ON_KEY, ON_SAVE = range(2)
+
 	def __init__(self):
 		sublime_plugin.EventListener.__init__(self)
 		self.loadSettings()
@@ -25,18 +27,29 @@ class Jeeves(sublime_plugin.EventListener):
 			print "Jeeves: enabled"
 			self.build = self.settings.get("build")
 
+	def on_query_context(self, view, key, operator, operand, match_all):
+		#print "enum: "+str(Jeeves.ON_KEY)+" | "+str(Jeeves.ON_SAVE)
+		if key == "jeeves_exec":
+			self.execBuild(view, Jeeves.ON_KEY)
+			return True
+
+		return None
+
 	def on_post_save(self, view):
 		if not self.enabled:
 			print "Jeeves: disabled"
 			return
 
-		build = self.getBuildSystem(view)
+		self.execBuild(view, Jeeves.ON_SAVE)
+
+	def execBuild(self, view, execType):
+		build = self.getBuildSystem(view, execType)
 		if build is None: return
 
 		# Check to see if we should be monitoring this folder
 		folder = self.getValidFolder(view)
 		if folder is None:
-			#print "Jeeves: Not monitored"
+			print "Jeeves: Not monitored"
 			return
 
 		type = build.get("type")
@@ -44,21 +57,25 @@ class Jeeves(sublime_plugin.EventListener):
 		cmd["working_dir"] = folder
 		view.window().run_command(type, cmd)
 
-	def getBuildSystem(self, view):
+	def getBuildSystem(self, view, execType):
 		fileName = view.file_name()
 		fileExt = fileName[fileName.rfind('.')+1:]
 
 		build = self.build.get(fileExt)
 		if build is None:
-			#print "Jeeves: no build for: "+fileExt
+			print "Jeeves: no build for: "+fileExt
 			return None
-		elif not build.get("enabled"):
-			#print "Jeeves: build disabled for: "+fileExt
-			return None
-		else:
-			print "Jeeves: build: "+fileExt
+		elif execType == Jeeves.ON_KEY and build.get("enabled-key"):
+			print "Jeeves: build on key: "+fileExt
+			return build
+		elif execType == Jeeves.ON_SAVE and build.get("enabled-save"):
+			print "Jeeves: build on save: "+fileExt
+			return build
+		else:	
+			print "Jeeves: build disabled for: "+fileExt
 
-		return build
+		return None
+
 
 	# Compare the open project folders of the current Sublime Window to the folders specified in the jeeves config
 	# We assume that a valid file type open in this window's project list, even if not located within a valid folder, is ok trigger a build
