@@ -7,7 +7,9 @@
 import sublime, sublime_plugin,os
 
 class Jeeves(sublime_plugin.EventListener):
-	ON_KEY, ON_SAVE = range(2)
+	#ON_KEY, ON_SAVE = range(2)
+	ON_KEY = "enabled-key"
+	ON_SAVE = "enabled-save"
 
 	def __init__(self):
 		sublime_plugin.EventListener.__init__(self)
@@ -37,7 +39,7 @@ class Jeeves(sublime_plugin.EventListener):
 
 	def on_post_save(self, view):
 		if not self.enabled:
-			print "Jeeves: disabled"
+			#print "Jeeves: disabled"
 			return
 
 		self.execBuild(view, Jeeves.ON_SAVE)
@@ -49,7 +51,7 @@ class Jeeves(sublime_plugin.EventListener):
 		# Check to see if we should be monitoring this folder
 		folder = self.getValidFolder(view)
 		if folder is None:
-			print "Jeeves: Not monitored"
+			#print "Jeeves: Not monitored"
 			return
 
 		type = build.get("type")
@@ -59,19 +61,21 @@ class Jeeves(sublime_plugin.EventListener):
 
 	def getBuildSystem(self, view, execType):
 		fileName = view.file_name()
+		if fileName is None:
+			#print "Jeeves: invalid file"
+			return
+
 		fileExt = fileName[fileName.rfind('.')+1:]
 
 		build = self.build.get(fileExt)
 		if build is None:
-			print "Jeeves: no build for: "+fileExt
+			#print "Jeeves: no build for: "+fileExt
 			return None
-		elif execType == Jeeves.ON_KEY and build.get("enabled-key"):
-			print "Jeeves: build on key: "+fileExt
+		#elif execType == Jeeves.ON_KEY and build.get("enabled-key"):
+		elif build.get(execType):
+			print "Jeeves: build ["+ execType +"]: "+ fileExt
 			return build
-		elif execType == Jeeves.ON_SAVE and build.get("enabled-save"):
-			print "Jeeves: build on save: "+fileExt
-			return build
-		else:	
+		else:
 			print "Jeeves: build disabled for: "+fileExt
 
 		return None
