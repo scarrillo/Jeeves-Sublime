@@ -11,17 +11,20 @@
 			"enabled-key": true,
 			"type": "exec",
 			"exec": {
-				"cmd": ["mvn", "-Dgoogle.force=false", "antrun:run", "-Plocalhost,!default"]
+				"cmd": ["mvn", "-Dgoogle.force=false", "-Djs.enabled=true", "-Dcss.enabled=false", "antrun:run", "-Plocalhost,!default"]
 			}
 		},
 		"css": {
 			"enabled-save": true,
 			"enabled-key": true,
 			"enabled": true,
-			"type": "build",
-			"build": {
-				"variant":"Recompile"
+			"type": "exec",
+			"exec": {
+				"cmd": ["mvn", "-Dgoogle.force=false", "-Djs.enabled=false", "-Dcss.enabled=true", "antrun:run", "-Plocalhost,!default"]
 			}
+			//"build": {
+			//	"variant":"Recompile"
+			//}
 		}
 	}
 }
