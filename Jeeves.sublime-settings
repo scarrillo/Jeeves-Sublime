@@ -1,22 +1,30 @@
 {
 	"enabled": true,
-	"folders": [],
+	"folders": [
+		"nick-arc-webapp",
+		"common-arc",
+		"kfar"
+	],
 	"build": {
 		"js": {
-			"enabled": false,
+			"enabled-save": true,
+			"enabled-key": true,
 			"type": "exec",
 			"exec": {
-				"cmd": [
-					"ant", "-f", "build.xml"
-				]
+				"cmd": ["mvn", "-Dgoogle.force=false", "-Djs.enabled=true", "-Dcss.enabled=false", "antrun:run", "-Plocalhost,!default"]
 			}
 		},
 		"css": {
-			"enabled": false
-			"type": "build",
-			"build": {
-				"variant": "Recompile"
+			"enabled-save": true,
+			"enabled-key": true,
+			"enabled": true,
+			"type": "exec",
+			"exec": {
+				"cmd": ["mvn", "-Dgoogle.force=false", "-Djs.enabled=false", "-Dcss.enabled=true", "antrun:run", "-Plocalhost,!default"]
 			}
+			//"build": {
+			//	"variant":"Recompile"
+			//}
 		}
 	}
 }
