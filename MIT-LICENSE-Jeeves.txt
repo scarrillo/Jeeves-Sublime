@@ -1,6 +1,9 @@
-Copyright (c) 2012 Logic Phase, Shawn Carrillo
-http://logicphase.net/
+All of the Jeeves Sublime Text Plugin is licensed under the MIT license.
+
+Copyright (c) 2012 Shawn Carrillo, Logic Phase
+
 http://shawn.co/
+http://logicphase.net/
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
