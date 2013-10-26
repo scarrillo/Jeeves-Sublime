@@ -4,7 +4,7 @@
 # Version 1.0
 # Date: 2012.10.01
 ''' 
-import sublime, sublime_plugin,os
+import sublime, sublime_plugin
 
 class Jeeves(sublime_plugin.EventListener):
 	#ON_KEY, ON_SAVE = range(2)
@@ -19,6 +19,7 @@ class Jeeves(sublime_plugin.EventListener):
 		#print "Jeeves: load settings"
 		self.settings = sublime.load_settings("Jeeves.sublime-settings")
 		self.enabled = self.settings.get("enabled")
+		self.filterFolders = self.settings.get("filter-folders")
 
 		# Neat, but called whenever the file is saved, not just the key specified
 		self.settings.clear_on_change("enabled") # Ensure we've cleared all post listeners
@@ -45,35 +46,50 @@ class Jeeves(sublime_plugin.EventListener):
 		self.execBuild(view, Jeeves.ON_SAVE)
 
 	def execBuild(self, view, execType):
-		build = self.getBuildSystem(view, execType)
-		if build is None: return
-
 		# Check to see if we should be monitoring this folder
 		folder = self.getValidFolder(view)
+
 		if folder is None:
-			#print "Jeeves: Not monitored"
+			print "Jeeves: Folder not monitored"
 			return
+
+		# Retrieve build system for file type
+		build = self.getBuildSystem(view, execType, folder)
+		if build is None: return
 
 		type = build.get("type")
 		cmd = build.get(type)
 		cmd["working_dir"] = folder
 		view.window().run_command(type, cmd)
 
-	def getBuildSystem(self, view, execType):
+	def getBuildSystem(self, view, execType, folder):
 		fileName = view.file_name()
 		if fileName is None:
-			#print "Jeeves: invalid file"
 			return
 
 		fileExt = fileName[fileName.rfind('.')+1:]
+		folderName = folder[folder.rfind('/')+1:]
 
-		build = self.build.get(fileExt)
+		# Get build system by folder, else check default
+		build = self.build.get(folderName)
+
 		if build is None:
-			#print "Jeeves: no build for: "+fileExt
+			print "Jeeves: no build found for: "+ folderName
+			build = self.build.get("default")
+		#else:
+		#	print "Jeeves: build found for: "+ folderName
+
+		if build is None:
+			print "Jeeves: no default build found"
+			return None
+
+		build = build.get(fileExt)
+		if build is None:
+			print "Jeeves: no build for: "+fileExt
 			return None
 		#elif execType == Jeeves.ON_KEY and build.get("enabled-key"):
 		elif build.get(execType):
-			print "Jeeves: build ["+ execType +"]: "+ fileExt
+			print "Jeeves: build "+ folderName +":"+ fileExt
 			return build
 		else:
 			print "Jeeves: build disabled for: "+fileExt
@@ -93,6 +109,10 @@ class Jeeves(sublime_plugin.EventListener):
 
 		# First folder in Open Projects
 		folder = folders[0]
+
+		if not self.filterFolders:
+			print "Jeeves: folder filter disabled"
+			return folder
 
 		# Compare against folders specified in settings
 		validFolders = self.settings.get("folders")

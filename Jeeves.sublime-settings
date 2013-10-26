@@ -1,30 +1,55 @@
 {
 	"enabled": true,
+	"filter-folders": false,
 	"folders": [
 		"nick-arc-webapp",
 		"common-arc",
-		"kfar"
+		"kfar",
+		"WowBone"
 	],
 	"build": {
-		"js": {
-			"enabled-save": true,
-			"enabled-key": true,
-			"type": "exec",
-			"exec": {
-				"cmd": ["mvn", "-Dgoogle.force=false", "-Djs.enabled=true", "-Dcss.enabled=false", "antrun:run", "-Plocalhost,!default"]
+		"WowBone": {
+			"js": {
+				"enabled-save": true,
+				"enabled-key": true,
+				"type": "build",
+				"build": {
+					// Executes default build system set. Can override with variant below.
+					//"variant":"asd"
+				}
+				// -or- Override manually with custom build
+				// "exec": {
+				// 	"cmd": ["grunt", "--no-color"],
+				// 	"working_dir": "${folder:${project_path:${file_path}}}",
+				// 	"path": "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/silent/bin:/usr/local/share/npm/bin/"
+				// }
+			},
+			"css": {
+				"build": { // Default build system (grunt)
+				}
 			}
 		},
-		"css": {
-			"enabled-save": true,
-			"enabled-key": true,
-			"enabled": true,
-			"type": "exec",
-			"exec": {
-				"cmd": ["mvn", "-Dgoogle.force=false", "-Djs.enabled=false", "-Dcss.enabled=true", "antrun:run", "-Plocalhost,!default"]
+		"default": {
+			"js": {
+				"enabled-save": true,
+				"enabled-key": true,
+				"type": "exec",
+				"exec": {
+					"cmd": ["mvn", "-Dgoogle.force=false", "-Djs.enabled=true", "-Dcss.enabled=false", "antrun:run", "-Plocalhost,!default"]
+				}
+			},
+			"css": {
+				"enabled-save": true,
+				"enabled-key": true,
+				"enabled": true,
+				"type": "exec",
+				"exec": {
+					"cmd": ["mvn", "-Dgoogle.force=false", "-Djs.enabled=false", "-Dcss.enabled=true", "antrun:run", "-Plocalhost,!default"]
+				}
+				//"build": {
+				//	"variant":"Recompile"
+				//}
 			}
-			//"build": {
-			//	"variant":"Recompile"
-			//}
 		}
 	}
 }
