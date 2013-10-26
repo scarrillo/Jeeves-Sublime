@@ -18,6 +18,6 @@ Execute a build system when a project resource changes.
 
 ##### Custom Configuraton:
 	- Create a copy of "jeeves.sublime-settings" under /Packages/User
-	- Add folders to monitor for changes.
-	- Add custom build scripts per resource file extension.
+	- Optionally add project folders to monitor exclusively for changes.
+	- Add custom build scripts per projects and file extensions 
 
